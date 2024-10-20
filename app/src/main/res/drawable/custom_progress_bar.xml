@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background warna abu-abu untuk track progress -->
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="5dp" /> <!-- Sesuaikan sudut -->
+            <solid android:color="#D3D3D3"/> <!-- Warna background abu-abu -->
+        </shape>
+    </item>
+
+    <!-- Progress warna 5D63D1 -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape>
+                <corners android:radius="5dp" /> <!-- Sesuaikan sudut -->
+                <solid android:color="#5D63D1"/> <!-- Warna progress -->
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

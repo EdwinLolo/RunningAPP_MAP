@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Nama Event -->
+    <EditText
+        android:id="@+id/event_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nama Event" />
+
+    <!-- Waktu Event -->
+    <EditText
+        android:id="@+id/event_time_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Waktu Event" />
+
+    <!-- Deskripsi Event -->
+    <EditText
+        android:id="@+id/event_description_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Deskripsi Event" />
+
+    <!-- Tombol Pilih Poster -->
+    <Button
+        android:id="@+id/select_poster_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pilih Poster" />
+
+    <!-- Tombol Simpan Event -->
+    <Button
+        android:id="@+id/save_event_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Simpan Event"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

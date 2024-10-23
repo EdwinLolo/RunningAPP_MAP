@@ -5,38 +5,55 @@
     android:id="@+id/main"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#181818"
+    android:background="#AAC7D8"
+    android:padding="24dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome back! Glad to see you, Again!"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="32dp" />
+
     <EditText
         android:id="@+id/email"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:background="@drawable/rounded_edit_text"
+        android:layout_marginBottom="16dp"
         android:inputType="textEmailAddress"
         android:textColorHint="#757575"
         android:textColor="@color/white"
+        android:padding="12dp"
         />
 
     <EditText
         android:id="@+id/password"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
+        android:background="@drawable/rounded_edit_text"
         android:inputType="textPassword"
         android:textColorHint="#757575"
         android:textColor="@color/white"
+        android:padding="12dp"
         />
 
     <Button
         android:id="@+id/continueBtn"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:text="Continue"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:padding="12dp"
+        android:background="@color/black"/>
 
     <TextView
         android:id="@+id/move"

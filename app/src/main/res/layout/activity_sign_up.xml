@@ -1,50 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="#181818"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="#AAC7D7">
 
+    <!-- Container untuk Tombol Back agar posisinya di bagian atas -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/back_arrow"
+            android:contentDescription="Back"
+            android:layout_marginStart="0dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="4dp" />
+    </LinearLayout>
+
+    <!-- Judul Halaman Register -->
+    <TextView
+        android:id="@+id/registerTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello! Register to get started"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="24dp"
+        android:gravity="center" />
+
+    <!-- Input Username -->
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Username"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/rounded_edit_text"
+        android:padding="12dp" />
+
+    <!-- Input Email -->
     <EditText
         android:id="@+id/email"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:textColorHint="#757575"
-        android:textColor="@color/white"
-        />
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/rounded_edit_text"
+        android:padding="12dp"
+        android:inputType="textEmailAddress" />
 
+    <!-- Input Password -->
     <EditText
         android:id="@+id/password"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword"
-        android:textColorHint="#757575"
-        android:textColor="@color/white"
-        />
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/rounded_edit_text"
+        android:padding="12dp"
+        android:inputType="textPassword" />
 
+    <!-- Input Konfirmasi Password -->
+    <EditText
+        android:id="@+id/confirmPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Confirm password"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/rounded_edit_text"
+        android:padding="12dp"
+        android:inputType="textPassword" />
+
+    <!-- Tombol Sign Up -->
     <Button
-        android:id="@+id/continueBtn"
-        android:layout_width="wrap_content"
+        android:id="@+id/signupBtn"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:text="Continue"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/move"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#03A9F4"
-        android:text="Already have an account? Login here"
-        />
-
-
+        android:text="Sign Up"
+        android:textSize="18sp"
+        android:padding="12dp"
+        android:background="@color/black"
+        android:textColor="@android:color/white"/>
 </LinearLayout>

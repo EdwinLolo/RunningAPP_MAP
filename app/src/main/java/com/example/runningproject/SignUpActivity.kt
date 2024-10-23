@@ -1,64 +1,68 @@
 package com.example.runningproject
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.runningproject.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class SignUpActivity : AppCompatActivity() {
-    private lateinit var binding : ActivitySignUpBinding
+
+    private lateinit var binding: ActivitySignUpBinding
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Menghubungkan binding dengan layout sign up
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Inisialisasi Firebase Auth
         auth = Firebase.auth
 
-        binding.continueBtn.setOnClickListener {
-            auth.createUserWithEmailAndPassword(binding.email.getText().toString().trim(), binding.password.getText().toString().trim())
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "createUserWithEmail:success")
-                        val user = auth.currentUser
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        // If sign in fails, display a message to the user.
-                         Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                         Toast.makeText(
-                             baseContext, "Authentication failed.",
-                             Toast.LENGTH_SHORT
-                         ).show()
-                    }
-                }
+        // Fungsi ketika tombol Sign Up ditekan
+        binding.signupBtn.setOnClickListener {
+            val username = binding.username.text.toString().trim()
+            val email = binding.email.text.toString().trim()
+            val password = binding.password.text.toString().trim()
+            val confirmPassword = binding.confirmPassword.text.toString().trim()
+
+            if (password != confirmPassword) {
+                Toast.makeText(this, "Passwords do not match!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                registerUser(email, password)
+            } else {
+                Toast.makeText(this, "Please fill all fields.", Toast.LENGTH_SHORT).show()
+            }
         }
-        binding.move.setOnClickListener{
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+
+        // Fungsi untuk menangani tombol back
+        binding.backButton.setOnClickListener {
+            onBackPressed()
         }
     }
 
-    public override fun onStart() {
-        super.onStart()
-    // check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
+    private fun registerUser(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Log.d("SignUpActivity", "createUserWithEmail:success")
+                    Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Log.w("SignUpActivity", "createUserWithEmail:failure", task.exception)
+                    Toast.makeText(this, "Registration failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
 }

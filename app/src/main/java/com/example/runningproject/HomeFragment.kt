@@ -31,6 +31,7 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireContext(), CommunityActivity::class.java)
             startActivity(intent)
         }
+
     }
 
     override fun onDestroyView() {

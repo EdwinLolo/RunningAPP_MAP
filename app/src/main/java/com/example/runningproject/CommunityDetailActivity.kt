@@ -196,23 +196,37 @@ class CommunityDetailActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         val eventList = mutableListOf<Event>()
-        val adapter = PostAdapter(eventList)
+        val currentUser = auth.currentUser
 
-        binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.postsRecyclerView.adapter = adapter
+        // Pastikan currentUser tidak null
+        if (currentUser != null) {
+            // Mendapatkan adminId dari Firestore
+            firestore.collection("communities").document(communityId).get()
+                .addOnSuccessListener { document ->
+                    val adminId = document.getString("adminId")
 
-        // Memuat postingan dari Firestore
-        firestore.collection("communities").document(communityId).collection("posts").get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val event = document.toObject(Event::class.java)
-                    eventList.add(event)
+                    // Memuat postingan dari Firestore
+                    firestore.collection("communities").document(communityId).collection("posts").get()
+                        .addOnSuccessListener { result ->
+                            for (document in result) {
+                                val event = document.toObject(Event::class.java).copy(postId = document.id)
+                                eventList.add(event)
+                            }
+
+                            // Inisialisasi adapter setelah mendapatkan data
+                            val adapter = PostAdapter(eventList, currentUser.uid, adminId ?: "", communityId)
+                            binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
+                            binding.postsRecyclerView.adapter = adapter
+
+                            adapter.notifyDataSetChanged()
+                        }
+
                 }
-                adapter.notifyDataSetChanged()
-            }
-            .addOnFailureListener {
-                // Tangani error jika ada
-            }
+                .addOnFailureListener {
+                    // Tangani error jika adminId tidak bisa didapatkan
+                }
+        }
     }
+
 
 }

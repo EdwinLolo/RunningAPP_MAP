@@ -1,8 +1,10 @@
 package com.example.runningproject.model
 
 data class Event(
-    val name: String = "",          // Nama event
-    val time: String = "",          // Waktu event
-    val description: String = "",   // Deskripsi event
-    val posterUrl: String = ""      // URL poster event
+    val name: String = "",
+    val time: String = "",
+    val description: String = "",
+    val posterUrl: String = "",
+    val postId: String = "" // Tambahkan field ini jika belum ada
 )
+

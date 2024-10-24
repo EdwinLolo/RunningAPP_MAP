@@ -4,16 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/rounded_background"
+    >
 
     <!-- Poster Event -->
-    <ImageView
-        android:id="@+id/event_poster"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/event_poster_container"
+        android:layout_width="120dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+        <ImageView
+            android:id="@+id/event_poster"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars" />
+    </androidx.cardview.widget.CardView>
     <!-- Nama Event -->
     <TextView
         android:id="@+id/event_name"
@@ -22,7 +36,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/event_poster"
+        app:layout_constraintStart_toEndOf="@id/event_poster_container"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:text="Event Name" />
@@ -34,7 +48,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/event_name"
-        app:layout_constraintStart_toEndOf="@id/event_poster"
+        app:layout_constraintStart_toEndOf="@id/event_poster_container"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:text="Event Time" />
@@ -46,7 +60,7 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/event_time"
-        app:layout_constraintStart_toEndOf="@id/event_poster"
+        app:layout_constraintStart_toEndOf="@id/event_poster_container"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:text="Event Description" />
@@ -56,10 +70,10 @@
         android:id="@+id/delete_post_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="72dp"
         android:contentDescription="Delete Post"
         android:src="@drawable/ic_delete"
-        app:layout_constraintTop_toBottomOf="@id/event_description"
-    app:layout_constraintEnd_toEndOf="parent" /> <!-- Menyusun tombol ke kanan -->
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/event_description" /> <!-- Menyusun tombol ke kanan -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

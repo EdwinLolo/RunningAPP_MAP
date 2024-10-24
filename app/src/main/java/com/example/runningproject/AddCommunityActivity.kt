@@ -47,6 +47,12 @@ class AddCommunityActivity : AppCompatActivity() {
                 Toast.makeText(this, "Isi semua kolom", Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.backButton.setOnClickListener {
+            val intent = Intent(this, CommunityActivity::class.java)
+            startActivity(intent)
+            finish() // Tutup AddCommunityActivity setelah pindah ke CommunityActivity
+        }
     }
 
     // Fungsi untuk memilih gambar dari galeri

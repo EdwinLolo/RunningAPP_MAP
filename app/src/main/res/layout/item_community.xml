@@ -6,15 +6,29 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
+    <!-- ImageView for Community Image on the left -->
+    <ImageView
+        android:id="@+id/community_image"
+        android:layout_width="50dp"
+    android:layout_height="50dp"
+    android:scaleType="centerCrop"
+    android:contentDescription="Community Image"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent" />
+
+    <!-- TextView for Community Name on the right -->
     <TextView
         android:id="@+id/community_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
         tools:text="Community Name"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/community_image"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginStart="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

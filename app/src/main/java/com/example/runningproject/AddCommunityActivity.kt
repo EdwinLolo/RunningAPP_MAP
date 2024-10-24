@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.runningproject.databinding.ActivityAddCommunityBinding
@@ -112,7 +113,10 @@ class AddCommunityActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             imageUri = data.data
+            binding.logoPreview.setImageURI(imageUri) // Tampilkan pratinjau logo yang diunggah
+            binding.logoPreview.visibility = ImageView.VISIBLE // Tampilkan ImageView pratinjau
             Toast.makeText(this, "Logo terpilih", Toast.LENGTH_SHORT).show()
         }
     }
+
 }

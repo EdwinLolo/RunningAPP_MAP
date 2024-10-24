@@ -5,7 +5,9 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddCommunityActivity">
+    tools:context=".AddCommunityActivity"
+    android:background="@color/light_blue"
+    >
 
     <LinearLayout
         android:id="@+id/back_button_container"
@@ -40,26 +42,23 @@
             android:text="Add Community"
             android:textAlignment="center"
             android:textSize="26sp" />
-
-
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/back_button_container"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
         android:id="@+id/add_community_form"
         >
+
         <!-- Input Nama Komunitas -->
         <EditText
             android:id="@+id/community_name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Nama Komunitas"
-            app:layout_constraintTop_toTopOf="@id/add_community_form"
             android:layout_margin="16dp" />
 
         <!-- Input Lokasi Komunitas -->
@@ -68,7 +67,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Lokasi Komunitas"
-            app:layout_constraintTop_toBottomOf="@id/community_name_input"
             android:layout_margin="16dp" />
 
         <!-- Tombol Upload Logo -->
@@ -77,8 +75,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Upload Logo Komunitas"
-            app:layout_constraintTop_toBottomOf="@id/community_location_input"
             android:layout_margin="16dp" />
+
+        <!-- ImageView untuk Pratinjau Logo yang Diunggah -->
+        <ImageView
+            android:id="@+id/logo_preview"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:contentDescription="Logo Preview"
+            android:visibility="gone" /> <!-- Set to 'gone' initially until the user uploads an image -->
 
         <!-- Tombol Simpan Komunitas -->
         <Button
@@ -86,7 +93,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Simpan Komunitas"
-            app:layout_constraintTop_toBottomOf="@id/upload_logo_button"
             android:layout_margin="16dp" />
     </LinearLayout>
 

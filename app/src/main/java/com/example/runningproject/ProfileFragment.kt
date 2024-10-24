@@ -1,7 +1,10 @@
 package com.example.runningproject
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +20,8 @@ class ProfileFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
     private val db = Firebase.firestore // Inisialisasi Firestore
+    private val PICK_IMAGE_REQUEST = 1
+    private var imageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +45,27 @@ class ProfileFragment : Fragment() {
             startActivity(intent)
         }
 
+        // Menambahkan listener untuk addPhoto
+        binding.addPhoto.setOnClickListener {
+            openGallery()
+        }
+
         return view
+    }
+
+    // Fungsi untuk membuka galeri
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+    }
+
+    // Menangani hasil dari aktivitas galeri
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
+            imageUri = data?.data
+            binding.profileImage.setImageURI(imageUri) // Menampilkan gambar yang dipilih di profileImage
+        }
     }
 
     // Fungsi untuk mengambil dan menampilkan informasi pengguna dari Firestore

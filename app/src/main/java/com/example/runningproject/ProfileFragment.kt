@@ -1,5 +1,6 @@
 package com.example.runningproject
 
+import SharedViewModel
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.runningproject.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -22,6 +24,9 @@ class ProfileFragment : Fragment() {
     private val db = Firebase.firestore // Inisialisasi Firestore
     private val PICK_IMAGE_REQUEST = 1
     private var imageUri: Uri? = null
+
+    // Inisialisasi SharedViewModel
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,13 +81,15 @@ class ProfileFragment : Fragment() {
             db.collection("users").document(userId).get()
                 .addOnSuccessListener { document ->
                     if (document != null) {
-                        // Ambil data dari Firestore
                         val username = document.getString("username") ?: "User"
                         val email = document.getString("email") ?: "No email"
 
                         // Set data ke UI
                         binding.userName.text = username
                         binding.userLevel.text = "Beginner" // Contoh level pengguna
+
+                        // Set username ke SharedViewModel agar fragmen lain bisa mengaksesnya
+                        sharedViewModel.setUsername(username)
                     } else {
                         binding.userName.text = "No user found"
                     }

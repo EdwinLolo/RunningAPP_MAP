@@ -1,5 +1,6 @@
 package com.example.runningproject
 
+import HistoryFragment
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

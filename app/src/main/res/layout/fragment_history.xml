@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
-    tools:context=".ProfileFragment">
+    tools:context=".HistoryFragment">
 
     <!-- Bagian Profil Pengguna -->
     <LinearLayout
@@ -21,7 +21,7 @@
             android:id="@+id/profileImage"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/profile_placeholder"
+            android:src="@drawable/profile"
             android:layout_marginEnd="16dp"
             android:background="@drawable/profile_placeholder"
             android:scaleType="centerCrop" />
@@ -52,6 +52,7 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- CardView untuk Total Progress -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -150,7 +151,7 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-
+    <!-- CardView untuk History RecyclerView -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

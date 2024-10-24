@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -97,6 +98,11 @@ class CommunityDetailActivity : AppCompatActivity() {
         }
 
         dialog.show()
+
+        // Mengatur ukuran dialog
+        val width = (resources.displayMetrics.widthPixels * 0.85).toInt() // 85% dari lebar layar
+        val height = ViewGroup.LayoutParams.WRAP_CONTENT // Tinggi otomatis
+        dialog.window?.setLayout(width, height) // Set lebar dan tinggi dialog
     }
 
     // Fungsi untuk mengunggah poster ke Firebase Storage dan menyimpan event ke Firestore

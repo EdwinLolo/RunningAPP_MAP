@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.android.application")
     id("com.google.gms.google-services")
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
 }
 
 android {
@@ -52,7 +53,12 @@ dependencies {
     implementation ("com.google.firebase:firebase-storage:20.2.0")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation ("androidx.recyclerview:recyclerview:1.3.2")
+    implementation(libs.play.services.maps)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("androidx.activity:activity-ktx:1.6.1")
+    implementation("androidx.fragment:fragment-ktx:1.5.5")
+    implementation("com.google.android.gms:play-services-location:21.0.1")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

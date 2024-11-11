@@ -37,6 +37,11 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireContext(), CommunityActivity::class.java)
             startActivity(intent)
         }
+
+        binding.tracking.setOnClickListener {
+            val intent = Intent(requireContext(), MapsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun onDestroyView() {

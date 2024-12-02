@@ -26,12 +26,19 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<String>
     private lateinit var locationCallback: LocationCallback
+    private val db = Firebase.firestore
+    private lateinit var auth: FirebaseAuth
 
     private fun hasLocationPermission() =
         ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -45,6 +52,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        auth = FirebaseAuth.getInstance()
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -84,6 +93,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     val userLocation = LatLng(location.latitude, location.longitude)
                     updateMapLocation(userLocation)
                     addMarkerAtLocation(userLocation, "You")
+                    saveLocationToFirestore(userLocation)
                 }
             }
         }
@@ -132,5 +142,38 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun addMarkerAtLocation(location: LatLng, title: String) {
         mMap.addMarker(MarkerOptions().title(title).position(location))
+    }
+
+    private fun saveLocationToFirestore(location: LatLng) {
+        val userId = auth.currentUser?.uid ?: return
+        val locationData = hashMapOf(
+            "latitude" to location.latitude,
+            "longitude" to location.longitude,
+            "timestamp" to System.currentTimeMillis()
+        )
+        val uniqueRouteId = "unique_route_id" // Fixed unique ID for the route array
+        val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId)
+        routesDocRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                routesDocRef.update("locations", FieldValue.arrayUnion(locationData))
+                    .addOnSuccessListener {
+                        Log.d("MapsActivity", "Location added to route array successfully")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("MapsActivity", "Error adding location to route array", e)
+                    }
+            } else {
+                val routeData = hashMapOf(
+                    "locations" to arrayListOf(locationData)
+                )
+                routesDocRef.set(routeData)
+                    .addOnSuccessListener {
+                        Log.d("MapsActivity", "Route document created with initial location array")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w("MapsActivity", "Error creating route document", e)
+                    }
+            }
+        }
     }
 }

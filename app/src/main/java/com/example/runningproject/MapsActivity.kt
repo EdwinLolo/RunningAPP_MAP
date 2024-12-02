@@ -110,8 +110,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun startLocationUpdates() {
         val locationRequest = LocationRequest.create().apply {
-            interval = 5000 // 10 seconds
-            fastestInterval = 3000 // 5 seconds
+            interval = 5000
+            fastestInterval = 3000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 

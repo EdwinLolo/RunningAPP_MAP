@@ -3,6 +3,7 @@ package com.example.runningproject
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -30,6 +31,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
+import com.google.android.gms.maps.model.PolylineOptions
+
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -40,11 +43,44 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val db = Firebase.firestore
     private lateinit var auth: FirebaseAuth
 
+    private var previousLocation: LatLng? = null
+    private var startLocation: LatLng? = null
+
+    private var totalDistance = 0.0
+    private var startTime: Long = 0
+    private var totalCalories = 0.0
+
+    private fun calculateDistance(start: LatLng, end: LatLng): Double {
+        val results = FloatArray(1)
+        Location.distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude, results)
+        return results[0].toDouble()
+    }
+
+    private fun calculateCalories(distance: Double): Double {
+        val weight = 60 // Berat pengguna dalam kg, bisa disesuaikan atau diambil dari input pengguna
+        val caloriesPerKm = 0.75 * weight
+        return (distance / 1000) * caloriesPerKm
+    }
+
+    private fun calculatePace(distance: Double, time: Long): Double {
+        val timeInMinutes = time / 60000.0
+        return timeInMinutes / (distance / 1000)
+    }
+
     private fun hasLocationPermission() =
         ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     private val fusedLocationProviderClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    private fun addPolylineAtLocation(startLocation: LatLng, endLocation: LatLng) {
+        mMap.addPolyline(
+            PolylineOptions()
+                .add(startLocation, endLocation)
+                .width(5f) // lebar garis
+                .color(Color.RED)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,8 +128,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 for (location in locationResult.locations) {
                     val userLocation = LatLng(location.latitude, location.longitude)
                     updateMapLocation(userLocation)
-                    addMarkerAtLocation(userLocation, "You")
                     saveLocationToFirestore(userLocation)
+
+                    if (startLocation == null) {
+                        startLocation = userLocation
+                        startTime = System.currentTimeMillis()
+                        addMarkerAtLocation(userLocation, "Start")
+                    } else {
+                        previousLocation?.let {
+                            val distance = calculateDistance(it, userLocation)
+                            totalDistance += distance
+                            totalCalories = calculateCalories(totalDistance)
+                            val currentTime = System.currentTimeMillis()
+                            val pace = if (totalDistance > 0) calculatePace(totalDistance, currentTime - startTime) else 0.0
+
+                            // Update UI with distance, calories, and pace
+                            binding.distanceTextView.text = "Distance: %.2f m".format(totalDistance)
+                            binding.caloriesTextView.text = "Calories: %.2f kcal".format(totalCalories)
+                            binding.paceTextView.text = "Pace: %.2f min/km".format(pace)
+
+                            addPolylineAtLocation(it, userLocation)
+                        }
+                    }
+                    previousLocation = userLocation
                 }
             }
         }
@@ -134,6 +191,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun stopLocationUpdates() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        previousLocation?.let {
+            addMarkerAtLocation(it, "End")
+        }
     }
 
     private fun updateMapLocation(location: LatLng) {
@@ -151,7 +211,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             "longitude" to location.longitude,
             "timestamp" to System.currentTimeMillis()
         )
-        val uniqueRouteId = "unique_route_id" // Fixed unique ID for the route array
+        val uniqueRouteId = "unique_route_id_3" // Fixed unique ID for the route array
         val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId)
         routesDocRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
@@ -163,8 +223,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         Log.w("MapsActivity", "Error adding location to route array", e)
                     }
             } else {
+                val pace = if (totalDistance > 0) calculatePace(totalDistance, System.currentTimeMillis() - startTime) else 0.0
                 val routeData = hashMapOf(
-                    "locations" to arrayListOf(locationData)
+                    "locations" to arrayListOf(locationData),
+                    "totalDistance" to totalDistance,
+                    "totalCalories" to totalCalories,
+                    "pace" to pace
                 )
                 routesDocRef.set(routeData)
                     .addOnSuccessListener {

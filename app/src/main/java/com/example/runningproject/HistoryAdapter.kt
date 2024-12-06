@@ -11,28 +11,30 @@ class HistoryAdapter(private val historyList: List<HistoryItem>) :
     RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
 
     class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val mapPreview: ImageView = itemView.findViewById(R.id.mapPreview)
-        val historyDate: TextView = itemView.findViewById(R.id.historyDate)
-        val historyDistance: TextView = itemView.findViewById(R.id.historyDistance)
-        val historyStats: TextView = itemView.findViewById(R.id.historyStats)
-        val arrowIcon: ImageView = itemView.findViewById(R.id.arrowIcon)
+        val dateTextView: TextView = itemView.findViewById(R.id.historyDate)
+        val distanceTextView: TextView = itemView.findViewById(R.id.historyDistance)
+        val caloriesTextView: TextView = itemView.findViewById(R.id.historyCalories)
+        val paceTextView: TextView = itemView.findViewById(R.id.historyPace)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
-        val view = LayoutInflater.from(parent.context)
+        val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.history_item, parent, false)
-        return HistoryViewHolder(view)
+        return HistoryViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        val history = historyList[position]
-        holder.historyDate.text = history.date
-        holder.historyDistance.text = history.distance
-        holder.historyStats.text = history.stats
-        // You can set map preview and arrow icon here if needed
+        val currentItem = historyList[position]
+        holder.dateTextView.text = currentItem.date
+
+        val distance = currentItem.distance.replace(" km", "").toDouble()
+        val calories = currentItem.calories.replace(" kcal", "").toDouble()
+        val pace = currentItem.pace.replace(" min/km", "").toDouble()
+
+        holder.distanceTextView.text = String.format("%.2f km", distance)
+        holder.caloriesTextView.text = String.format("%.1f kcal", calories)
+        holder.paceTextView.text = String.format("%.2f min/km", pace)
     }
 
-    override fun getItemCount(): Int {
-        return historyList.size
-    }
+    override fun getItemCount() = historyList.size
 }

@@ -11,9 +11,7 @@ import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
-
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,17 +20,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.example.runningproject.databinding.ActivityMapsBinding
 import com.google.android.gms.location.LocationServices
-
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.android.gms.maps.model.PolylineOptions
-
+import java.util.UUID
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -49,6 +45,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var totalDistance = 0.0
     private var startTime: Long = 0
     private var totalCalories = 0.0
+    private var uniqueRouteId: String? = null
 
     private fun calculateDistance(start: LatLng, end: LatLng): Double {
         val results = FloatArray(1)
@@ -113,6 +110,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.startButton.setOnClickListener {
             if (hasLocationPermission()) {
+                uniqueRouteId = UUID.randomUUID().toString() // Generate a new unique ID
                 startLocationUpdates()
             } else {
                 requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
@@ -128,7 +126,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 for (location in locationResult.locations) {
                     val userLocation = LatLng(location.latitude, location.longitude)
                     updateMapLocation(userLocation)
-                    saveLocationToFirestore(userLocation)
+                    uniqueRouteId?.let { saveLocationToFirestore(userLocation) }
 
                     if (startLocation == null) {
                         startLocation = userLocation
@@ -211,8 +209,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             "longitude" to location.longitude,
             "timestamp" to System.currentTimeMillis()
         )
-        val uniqueRouteId = "unique_route_id_3" // Fixed unique ID for the route array
-        val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId)
+        val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId!!)
         routesDocRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 // Update totalDistance, totalCalories, and pace before saving

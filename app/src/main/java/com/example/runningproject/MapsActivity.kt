@@ -215,13 +215,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId)
         routesDocRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                routesDocRef.update("locations", FieldValue.arrayUnion(locationData))
-                    .addOnSuccessListener {
-                        Log.d("MapsActivity", "Location added to route array successfully")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w("MapsActivity", "Error adding location to route array", e)
-                    }
+                // Update totalDistance, totalCalories, and pace before saving
+                val currentTime = System.currentTimeMillis()
+                val pace = if (totalDistance > 0) calculatePace(totalDistance, currentTime - startTime) else 0.0
+
+                routesDocRef.update(
+                    "locations", FieldValue.arrayUnion(locationData),
+                    "totalDistance", totalDistance,
+                    "totalCalories", totalCalories,
+                    "pace", pace
+                ).addOnSuccessListener {
+                    Log.d("MapsActivity", "Location and metrics added to route array successfully")
+                }.addOnFailureListener { e ->
+                    Log.w("MapsActivity", "Error adding location and metrics to route array", e)
+                }
             } else {
                 val pace = if (totalDistance > 0) calculatePace(totalDistance, System.currentTimeMillis() - startTime) else 0.0
                 val routeData = hashMapOf(
@@ -230,13 +237,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     "totalCalories" to totalCalories,
                     "pace" to pace
                 )
-                routesDocRef.set(routeData)
-                    .addOnSuccessListener {
-                        Log.d("MapsActivity", "Route document created with initial location array")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w("MapsActivity", "Error creating route document", e)
-                    }
+                routesDocRef.set(routeData).addOnSuccessListener {
+                    Log.d("MapsActivity", "Route document created with initial location array and metrics")
+                }.addOnFailureListener { e ->
+                    Log.w("MapsActivity", "Error creating route document with metrics", e)
+                }
             }
         }
     }

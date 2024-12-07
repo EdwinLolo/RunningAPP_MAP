@@ -103,6 +103,10 @@ class CommunityActivity : AppCompatActivity() {
                     intent.putExtra("communityId", communityId)
                     startActivity(intent)
                 }
+
+                // Apply the custom ItemDecoration
+                val margin = resources.getDimensionPixelSize(R.dimen.recycler_view_item_margin)
+                binding.recyclerView.addItemDecoration(CustomItemDecoration(this, margin))
             }
             .addOnFailureListener {
                 // Tangani error jika ada

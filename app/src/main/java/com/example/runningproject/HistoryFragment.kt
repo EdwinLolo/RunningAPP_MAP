@@ -14,6 +14,7 @@ import com.example.runningproject.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.android.gms.maps.model.LatLng
 
 class HistoryFragment : Fragment() {
 
@@ -58,7 +59,11 @@ class HistoryFragment : Fragment() {
                     val distance = document.getDouble("totalDistance")?.toString() ?: "0.0 km"
                     val calories = document.getDouble("totalCalories")?.toString() ?: "0.0 kcal"
                     val pace = document.getDouble("pace")?.toString() ?: "0.0 min/km"
-                    historyList.add(HistoryItem(date, distance, calories, pace))
+                    val locations = document.get("locations") as? List<Map<String, Any>> ?: emptyList()
+                    val locationList = locations.map { loc ->
+                        LatLng(loc["latitude"] as Double, loc["longitude"] as Double)
+                    }
+                    historyList.add(HistoryItem(date, distance, calories, pace, locationList))
                 }
                 historyAdapter = HistoryAdapter(historyList)
                 recyclerView.adapter = historyAdapter
@@ -66,5 +71,35 @@ class HistoryFragment : Fragment() {
             .addOnFailureListener { exception ->
                 Log.w("HistoryFragment", "Error getting documents: ", exception)
             }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        recyclerView.adapter?.let { adapter ->
+            for (i in 0 until adapter.itemCount) {
+                val holder = recyclerView.findViewHolderForAdapterPosition(i) as? HistoryAdapter.HistoryViewHolder
+                holder?.mapView?.onResume()
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        recyclerView.adapter?.let { adapter ->
+            for (i in 0 until adapter.itemCount) {
+                val holder = recyclerView.findViewHolderForAdapterPosition(i) as? HistoryAdapter.HistoryViewHolder
+                holder?.mapView?.onPause()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        recyclerView.adapter?.let { adapter ->
+            for (i in 0 until adapter.itemCount) {
+                val holder = recyclerView.findViewHolderForAdapterPosition(i) as? HistoryAdapter.HistoryViewHolder
+                holder?.mapView?.onDestroy()
+            }
+        }
     }
 }

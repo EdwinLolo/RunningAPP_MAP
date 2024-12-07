@@ -80,6 +80,47 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
+    private fun saveLocationToFirestore(location: LatLng) {
+        val userId = auth.currentUser?.uid ?: return
+        val locationData = hashMapOf(
+            "latitude" to location.latitude,
+            "longitude" to location.longitude,
+            "timestamp" to System.currentTimeMillis()
+        )
+        val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId!!)
+        routesDocRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                // Update totalDistance, totalCalories, and pace before saving
+                val currentTime = System.currentTimeMillis()
+                val pace = if (totalDistance > 0) calculatePace(totalDistance, currentTime - startTime) else 0.0
+
+                routesDocRef.update(
+                    "locations", FieldValue.arrayUnion(locationData),
+                    "totalDistance", totalDistance,
+                    "totalCalories", totalCalories,
+                    "pace", pace
+                ).addOnSuccessListener {
+                    Log.d("MapsActivity", "Location and metrics added to route array successfully")
+                }.addOnFailureListener { e ->
+                    Log.w("MapsActivity", "Error adding location and metrics to route array", e)
+                }
+            } else {
+                val pace = if (totalDistance > 0) calculatePace(totalDistance, System.currentTimeMillis() - startTime) else 0.0
+                val routeData = hashMapOf(
+                    "locations" to arrayListOf(locationData),
+                    "totalDistance" to totalDistance,
+                    "totalCalories" to totalCalories,
+                    "pace" to pace
+                )
+                routesDocRef.set(routeData).addOnSuccessListener {
+                    Log.d("MapsActivity", "Route document created with initial location array and metrics")
+                }.addOnFailureListener { e ->
+                    Log.w("MapsActivity", "Error creating route document with metrics", e)
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -174,17 +215,25 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.create().apply {
-            interval = 5000
-            fastestInterval = 3000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
+        if (hasLocationPermission()) {
+            val locationRequest = LocationRequest.create().apply {
+                interval = 5000
+                fastestInterval = 3000
+                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            }
 
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            null
-        )
+            try {
+                fusedLocationProviderClient.requestLocationUpdates(
+                    locationRequest,
+                    locationCallback,
+                    null
+                )
+            } catch (e: SecurityException) {
+                Log.e("MapsActivity", "Location permission not granted", e)
+            }
+        } else {
+            requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
+        }
     }
 
     private fun stopLocationUpdates() {
@@ -200,46 +249,5 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun addMarkerAtLocation(location: LatLng, title: String) {
         mMap.addMarker(MarkerOptions().title(title).position(location))
-    }
-
-    private fun saveLocationToFirestore(location: LatLng) {
-        val userId = auth.currentUser?.uid ?: return
-        val locationData = hashMapOf(
-            "latitude" to location.latitude,
-            "longitude" to location.longitude,
-            "timestamp" to System.currentTimeMillis()
-        )
-        val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId!!)
-        routesDocRef.get().addOnSuccessListener { document ->
-            if (document.exists()) {
-                // Update totalDistance, totalCalories, and pace before saving
-                val currentTime = System.currentTimeMillis()
-                val pace = if (totalDistance > 0) calculatePace(totalDistance, currentTime - startTime) else 0.0
-
-                routesDocRef.update(
-                    "locations", FieldValue.arrayUnion(locationData),
-                    "totalDistance", totalDistance,
-                    "totalCalories", totalCalories,
-                    "pace", pace
-                ).addOnSuccessListener {
-                    Log.d("MapsActivity", "Location and metrics added to route array successfully")
-                }.addOnFailureListener { e ->
-                    Log.w("MapsActivity", "Error adding location and metrics to route array", e)
-                }
-            } else {
-                val pace = if (totalDistance > 0) calculatePace(totalDistance, System.currentTimeMillis() - startTime) else 0.0
-                val routeData = hashMapOf(
-                    "locations" to arrayListOf(locationData),
-                    "totalDistance" to totalDistance,
-                    "totalCalories" to totalCalories,
-                    "pace" to pace
-                )
-                routesDocRef.set(routeData).addOnSuccessListener {
-                    Log.d("MapsActivity", "Route document created with initial location array and metrics")
-                }.addOnFailureListener { e ->
-                    Log.w("MapsActivity", "Error creating route document with metrics", e)
-                }
-            }
-        }
     }
 }

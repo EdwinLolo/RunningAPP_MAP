@@ -51,6 +51,12 @@
             android:text="11.2 min/km"
             android:textSize="12sp"
             android:textColor="@android:color/darker_gray" />
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/historyMapView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
     </LinearLayout>
 
     <!-- Arrow Icon -->

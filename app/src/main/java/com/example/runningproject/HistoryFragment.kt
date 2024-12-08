@@ -56,9 +56,9 @@ class HistoryFragment : Fragment() {
                 val historyList = mutableListOf<HistoryItem>()
                 for (document in documents) {
                     val date = document.getString("date") ?: ""
-                    val distance = document.getDouble("totalDistance")?.toString() ?: "0.0 km"
-                    val calories = document.getDouble("totalCalories")?.toString() ?: "0.0 kcal"
-                    val pace = document.getDouble("pace")?.toString() ?: "0.0 min/km"
+                    val distance = document.getDouble("totalDistance")?.let { String.format("%.2f m", it) } ?: "0.00 km"
+                    val calories = document.getDouble("totalCalories")?.let { String.format("%.0f kcal", it) } ?: "0 kcal"
+                    val pace = document.getDouble("pace")?.let { String.format("%.1f min/km", it) } ?: "0.0 min/km"
                     val locations = document.get("locations") as? List<Map<String, Any>> ?: emptyList()
                     val locationList = locations.map { loc ->
                         LatLng(loc["latitude"] as Double, loc["longitude"] as Double)

@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.runningproject.databinding.ActivityCommunityDetailBinding
 import com.example.runningproject.model.Event
@@ -72,6 +73,9 @@ class CommunityDetailActivity : AppCompatActivity() {
         val eventDescriptionInput = dialog.findViewById<EditText>(R.id.event_description_input)
         val selectPosterButton = dialog.findViewById<Button>(R.id.select_poster_button)
         val saveEventButton = dialog.findViewById<Button>(R.id.save_event_button)
+        val recyclerView: RecyclerView = findViewById(R.id.posts_recycler_view)
+        val spaceHeight = resources.getDimensionPixelSize(R.dimen.recycler_view_item_margin)
+        recyclerView.addItemDecoration(MarginItemEventDecoration(spaceHeight))
 
         // Pilih gambar poster
         selectPosterButton.setOnClickListener {
@@ -200,39 +204,42 @@ class CommunityDetailActivity : AppCompatActivity() {
             }
     }
 
-    private fun setupRecyclerView() {
-        val eventList = mutableListOf<Event>()
-        val currentUser = auth.currentUser
+        private fun setupRecyclerView() {
+            val eventList = mutableListOf<Event>()
+            val currentUser = auth.currentUser
+            val spaceHeight = resources.getDimensionPixelSize(R.dimen.community_post_item_margin)
+            binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
+            binding.postsRecyclerView.addItemDecoration(MarginItemEventDecoration(spaceHeight))
 
-        // Pastikan currentUser tidak null
-        if (currentUser != null) {
-            // Mendapatkan adminId dari Firestore
-            firestore.collection("communities").document(communityId).get()
-                .addOnSuccessListener { document ->
-                    val adminId = document.getString("adminId")
+            // Pastikan currentUser tidak null
+            if (currentUser != null) {
+                // Mendapatkan adminId dari Firestore
+                firestore.collection("communities").document(communityId).get()
+                    .addOnSuccessListener { document ->
+                        val adminId = document.getString("adminId")
 
-                    // Memuat postingan dari Firestore
-                    firestore.collection("communities").document(communityId).collection("posts").get()
-                        .addOnSuccessListener { result ->
-                            for (document in result) {
-                                val event = document.toObject(Event::class.java).copy(postId = document.id)
-                                eventList.add(event)
+                        // Memuat postingan dari Firestore
+                        firestore.collection("communities").document(communityId).collection("posts").get()
+                            .addOnSuccessListener { result ->
+                                for (document in result) {
+                                    val event = document.toObject(Event::class.java).copy(postId = document.id)
+                                    eventList.add(event)
+                                }
+
+                                // Inisialisasi adapter setelah mendapatkan data
+                                val adapter = PostAdapter(eventList, currentUser.uid, adminId ?: "", communityId)
+                                binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
+                                binding.postsRecyclerView.adapter = adapter
+
+                                adapter.notifyDataSetChanged()
                             }
 
-                            // Inisialisasi adapter setelah mendapatkan data
-                            val adapter = PostAdapter(eventList, currentUser.uid, adminId ?: "", communityId)
-                            binding.postsRecyclerView.layoutManager = LinearLayoutManager(this)
-                            binding.postsRecyclerView.adapter = adapter
-
-                            adapter.notifyDataSetChanged()
-                        }
-
-                }
-                .addOnFailureListener {
-                    // Tangani error jika adminId tidak bisa didapatkan
-                }
+                    }
+                    .addOnFailureListener {
+                        // Tangani error jika adminId tidak bisa didapatkan
+                    }
+            }
         }
-    }
 
 
 }

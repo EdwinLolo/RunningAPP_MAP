@@ -32,7 +32,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Pilih Poster" />
+        android:text="Pilih Poster"
+        android:textColor="@color/black"
+        android:backgroundTint="#DFEBF6"/>
 
     <ImageView
         android:id="@+id/image_preview"
@@ -49,6 +51,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Simpan Event"
+        android:textColor="@color/black"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#DFEBF6"/>
 </LinearLayout>

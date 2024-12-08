@@ -55,7 +55,19 @@ class HistoryFragment : Fragment() {
             .addOnSuccessListener { documents ->
                 val historyList = mutableListOf<HistoryItem>()
                 for (document in documents) {
-                    val date = document.getString("date") ?: ""
+                    val date = document.get("date")?.let {
+                        when (it) {
+                            is String -> it
+                            is com.google.firebase.Timestamp -> {
+                                val timestamp = it
+                                val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
+                                dateFormat.format(timestamp.toDate())
+                            }
+                            else -> ""
+                        }
+                    } ?: ""
+
+                    // Ambil data lainnya seperti biasa
                     val distance = document.getDouble("totalDistance")?.let { String.format("%.2f m", it) } ?: "0.00 km"
                     val calories = document.getDouble("totalCalories")?.let { String.format("%.0f kcal", it) } ?: "0 kcal"
                     val pace = document.getDouble("pace")?.let { String.format("%.1f min/km", it) } ?: "0.0 min/km"
@@ -63,8 +75,11 @@ class HistoryFragment : Fragment() {
                     val locationList = locations.map { loc ->
                         LatLng(loc["latitude"] as Double, loc["longitude"] as Double)
                     }
+
+                    // Tambahkan item history ke list
                     historyList.add(HistoryItem(date, distance, calories, pace, locationList))
                 }
+                // Update adapter dengan data terbaru
                 historyAdapter = HistoryAdapter(historyList)
                 recyclerView.adapter = historyAdapter
             }
@@ -72,6 +87,7 @@ class HistoryFragment : Fragment() {
                 Log.w("HistoryFragment", "Error getting documents: ", exception)
             }
     }
+
 
     override fun onResume() {
         super.onResume()

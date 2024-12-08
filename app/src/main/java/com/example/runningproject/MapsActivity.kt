@@ -28,6 +28,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.android.gms.maps.model.PolylineOptions
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -88,6 +91,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             "timestamp" to System.currentTimeMillis()
         )
         val routesDocRef = db.collection("users").document(userId).collection("routes").document(uniqueRouteId!!)
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         routesDocRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
                 // Update totalDistance, totalCalories, and pace before saving
@@ -98,7 +102,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     "locations", FieldValue.arrayUnion(locationData),
                     "totalDistance", totalDistance,
                     "totalCalories", totalCalories,
-                    "pace", pace
+                    "pace", pace,
+                    "date", currentDate
                 ).addOnSuccessListener {
                     Log.d("MapsActivity", "Location and metrics added to route array successfully")
                 }.addOnFailureListener { e ->
@@ -110,7 +115,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     "locations" to arrayListOf(locationData),
                     "totalDistance" to totalDistance,
                     "totalCalories" to totalCalories,
-                    "pace" to pace
+                    "pace" to pace,
+                    "date" to currentDate
                 )
                 routesDocRef.set(routeData).addOnSuccessListener {
                     Log.d("MapsActivity", "Route document created with initial location array and metrics")

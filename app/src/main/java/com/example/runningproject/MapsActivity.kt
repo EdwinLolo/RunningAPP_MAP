@@ -188,9 +188,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             val pace = if (totalDistance > 0) calculatePace(totalDistance, currentTime - startTime) else 0.0
 
                             // Update UI with distance, calories, and pace
-                            binding.distanceTextView.text = "Distance: %.2f m".format(totalDistance)
-                            binding.caloriesTextView.text = "Calories: %.2f kcal".format(totalCalories)
-                            binding.paceTextView.text = "Pace: %.2f min/km".format(pace)
+                            val formattedDistance = if (totalDistance >= 100) {
+                                String.format("%06.2f m", totalDistance)
+                            } else {
+                                String.format("%05.2f m", totalDistance)
+                            }
+
+                            val formattedCalories = if (totalCalories >= 100) {
+                                String.format("%06.2f kcal", totalCalories)
+                            } else {
+                                String.format("%05.2f kcal", totalCalories)
+                            }
+
+                            val formattedPace = if (pace >= 100) {
+                                String.format("%06.2f min/km", pace)
+                            } else {
+                                String.format("%05.2f min/km", pace)
+                            }
+
+                            binding.distanceTextView.text = formattedDistance
+                            binding.caloriesTextView.text = formattedCalories
+                            binding.paceTextView.text = formattedPace
 
                             addPolylineAtLocation(it, userLocation)
                         }

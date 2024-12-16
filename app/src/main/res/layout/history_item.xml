@@ -6,13 +6,12 @@
     android:gravity="center_vertical">
 
     <!-- Map Preview Image -->
-    <ImageView
-        android:id="@+id/mapPreview"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:src="@drawable/profile_placeholder"
-        android:layout_marginEnd="12dp"
-        android:scaleType="centerCrop" />
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/historyMapView"
+        android:layout_width="0dp"
+        android:layout_height="153dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="1" />
 
     <!-- History Details (Date, Distance, Stats) -->
     <LinearLayout
@@ -52,17 +51,12 @@
             android:textSize="12sp"
             android:textColor="@android:color/darker_gray" />
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/historyMapView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp" />
-
     </LinearLayout>
 
     <!-- Arrow Icon -->
     <ImageView
         android:id="@+id/arrowIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="53dp"
+        android:layout_height="38dp"
         android:src="@drawable/arrow_right" />
 </LinearLayout>

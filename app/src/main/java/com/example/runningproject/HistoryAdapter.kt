@@ -1,8 +1,10 @@
 package com.example.runningproject
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,6 +23,7 @@ class HistoryAdapter(private val historyList: List<HistoryItem>) :
         val caloriesTextView: TextView = itemView.findViewById(R.id.historyCalories)
         val paceTextView: TextView = itemView.findViewById(R.id.historyPace)
         val mapView: MapView = itemView.findViewById(R.id.historyMapView)
+        val arrowIcon: ImageView = itemView.findViewById(R.id.arrowIcon)
         var googleMap: GoogleMap? = null
         var locations: List<LatLng> = emptyList()
 
@@ -46,6 +49,14 @@ class HistoryAdapter(private val historyList: List<HistoryItem>) :
             paceTextView.text = historyItem.pace
             locations = historyItem.locations
             mapView.getMapAsync(this)
+
+            arrowIcon.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, HistoryDetailActivity::class.java).apply {
+                    putExtra("HISTORY_ITEM", historyItem)
+                }
+                context.startActivity(intent)
+            }
         }
     }
 

@@ -1,3 +1,5 @@
+package com.example.runningproject
+
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,6 +56,11 @@ class HistoryFragment : Fragment() {
             .get()
             .addOnSuccessListener { documents ->
                 val historyList = mutableListOf<HistoryItem>()
+                var totalDistance = 0.0
+                var totalCalories = 0.0
+                var totalPace = 0.0
+                var paceCount = 0
+
                 for (document in documents) {
                     val date = document.get("date")?.let {
                         when (it) {
@@ -67,27 +74,38 @@ class HistoryFragment : Fragment() {
                         }
                     } ?: ""
 
-                    // Ambil data lainnya seperti biasa
-                    val distance = document.getDouble("totalDistance")?.let { String.format("%.2f m", it) } ?: "0.00 km"
-                    val calories = document.getDouble("totalCalories")?.let { String.format("%.0f kcal", it) } ?: "0 kcal"
-                    val pace = document.getDouble("pace")?.let { String.format("%.1f min/km", it) } ?: "0.0 min/km"
+                    val distance = document.getDouble("totalDistance") ?: 0.0
+                    val calories = document.getDouble("totalCalories") ?: 0.0
+                    val pace = document.getDouble("pace") ?: 0.0
+
+                    totalDistance += distance
+                    totalCalories += calories
+                    if (pace > 0) {
+                        totalPace += pace
+                        paceCount++
+                    }
+
                     val locations = document.get("locations") as? List<Map<String, Any>> ?: emptyList()
                     val locationList = locations.map { loc ->
                         LatLng(loc["latitude"] as Double, loc["longitude"] as Double)
                     }
 
-                    // Tambahkan item history ke list
-                    historyList.add(HistoryItem(date, distance, calories, pace, locationList))
+                    historyList.add(HistoryItem(date, String.format("%.2f m", distance), String.format("%.0f kcal", calories), String.format("%.1f min/km", pace), locationList))
                 }
-                // Update adapter dengan data terbaru
+
+                // Update adapter with the latest data
                 historyAdapter = HistoryAdapter(historyList)
                 recyclerView.adapter = historyAdapter
+
+                // Update the total TextViews
+                view?.findViewById<TextView>(R.id.total_distance)?.text = String.format("%.2f km", totalDistance / 1000)
+                view?.findViewById<TextView>(R.id.total_calories)?.text = String.format("%.0f kcal", totalCalories)
+                view?.findViewById<TextView>(R.id.total_pace)?.text = if (paceCount > 0) String.format("%.1f min/km", totalPace / paceCount) else "0.0 min/km"
             }
             .addOnFailureListener { exception ->
                 Log.w("HistoryFragment", "Error getting documents: ", exception)
             }
     }
-
 
     override fun onResume() {
         super.onResume()

@@ -1,6 +1,5 @@
 package com.example.runningproject
 
-import SharedViewModel
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri

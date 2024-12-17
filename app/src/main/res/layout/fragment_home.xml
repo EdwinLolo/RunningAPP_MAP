@@ -274,9 +274,10 @@
                         android:src="@drawable/icon_orang" />
 
                     <TextView
+                        android:id="@+id/homeTotalDistance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="103,2 km"
+                        android:text="0,00 km"
                         android:textSize="14sp"
                         android:layout_marginTop="4dp" />
                 </LinearLayout>
@@ -295,9 +296,10 @@
                         android:src="@drawable/jam" />
 
                     <TextView
+                        android:id="@+id/homeTotalPace"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="16,9 hr"
+                        android:text="0 min/km"
                         android:textSize="14sp"
                         android:layout_marginTop="4dp" />
                 </LinearLayout>
@@ -316,10 +318,11 @@
                         android:src="@drawable/api" />
 
                     <TextView
+                        android:id="@+id/homeTotalCalories"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="1,5 kcal"
+                        android:text="0 kcal"
                         android:textSize="14sp" />
                 </LinearLayout>
 

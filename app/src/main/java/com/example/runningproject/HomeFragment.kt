@@ -1,6 +1,5 @@
 package com.example.runningproject
 
-import SharedViewModel
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,6 +29,19 @@ class HomeFragment : Fragment() {
         // Observasi username dari SharedViewModel dan tampilkan di UI
         sharedViewModel.username.observe(viewLifecycleOwner, { username ->
             binding.userName.text = "Hello, $username"
+        })
+
+        // Observasi total distance, pace, dan calories dari SharedViewModel dan tampilkan di UI
+        sharedViewModel.totalDistance.observe(viewLifecycleOwner, { distance ->
+            binding.homeTotalDistance.text = distance
+        })
+
+        sharedViewModel.totalPace.observe(viewLifecycleOwner, { pace ->
+            binding.homeTotalPace.text = pace
+        })
+
+        sharedViewModel.totalCalories.observe(viewLifecycleOwner, { calories ->
+            binding.homeTotalCalories.text = calories
         })
 
         // Mengatur klik listener untuk LinearLayout join_community

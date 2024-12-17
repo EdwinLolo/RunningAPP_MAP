@@ -98,9 +98,10 @@
                         android:src="@drawable/icon_orang" />
 
                     <TextView
+                        android:id="@+id/total_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="103,2 km"
+                        android:text="0.00 km"
                         android:textSize="14sp"
                         android:layout_marginTop="4dp" />
                 </LinearLayout>
@@ -110,8 +111,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:paddingHorizontal="25dp"
-                    >
+                    android:paddingHorizontal="25dp">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -119,9 +119,10 @@
                         android:src="@drawable/jam" />
 
                     <TextView
+                        android:id="@+id/total_pace"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="16,9 hr"
+                        android:text="0.0 min/km"
                         android:textSize="14sp"
                         android:layout_marginTop="4dp" />
                 </LinearLayout>
@@ -131,8 +132,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:paddingHorizontal="24dp"
-                    >
+                    android:paddingHorizontal="24dp">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -140,15 +140,17 @@
                         android:src="@drawable/api" />
 
                     <TextView
+                        android:id="@+id/total_calories"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="1,5 kcal"
+                        android:text="0 kcal"
                         android:textSize="14sp" />
                 </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <!-- CardView untuk History RecyclerView -->

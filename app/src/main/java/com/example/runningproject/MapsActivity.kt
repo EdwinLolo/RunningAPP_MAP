@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.PolylineOptions
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -127,6 +126,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun getNewRouteDocumentName(userId: String, callback: (String) -> Unit) {
+        val routesCollection = db.collection("users").document(userId).collection("routes")
+        routesCollection.get().addOnSuccessListener { documents ->
+            val newRouteNumber = documents.size() + 1
+            val newRouteName = "history $newRouteNumber"
+            callback(newRouteName)
+        }.addOnFailureListener { e ->
+            Log.w("MapsActivity", "Error getting documents: ", e)
+            callback("history 1") // Default to "history 1" if there's an error
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -151,14 +162,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
 
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, HomeFragment::class.java)
-            startActivity(intent)
+            finish() // This will close the current activity and return to the previous one
         }
 
         binding.startButton.setOnClickListener {
             if (hasLocationPermission()) {
-                uniqueRouteId = UUID.randomUUID().toString() // Generate a new unique ID
-                startLocationUpdates()
+                val userId = auth.currentUser?.uid ?: return@setOnClickListener
+                getNewRouteDocumentName(userId) { newRouteName ->
+                    uniqueRouteId = newRouteName
+                    startLocationUpdates()
+                    startTrackingService()
+                    TrackingPreferences.setTracking(this, true)
+                }
             } else {
                 requestPermissionLauncher.launch(ACCESS_FINE_LOCATION)
             }
@@ -166,6 +181,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         binding.stopButton.setOnClickListener {
             stopLocationUpdates()
+            stopTrackingService()
+            TrackingPreferences.setTracking(this, false)
         }
 
         locationCallback = object : LocationCallback() {
@@ -216,6 +233,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     previousLocation = userLocation
                 }
             }
+        }
+
+        if (TrackingPreferences.isTracking(this)) {
+            startTrackingService()
         }
     }
 
@@ -273,5 +294,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun addMarkerAtLocation(location: LatLng, title: String) {
         mMap.addMarker(MarkerOptions().title(title).position(location))
+    }
+
+    private fun startTrackingService() {
+        val intent = Intent(this, TrackingService::class.java)
+        startService(intent)
+    }
+
+    private fun stopTrackingService() {
+        val intent = Intent(this, TrackingService::class.java)
+        stopService(intent)
     }
 }

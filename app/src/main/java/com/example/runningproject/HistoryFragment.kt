@@ -53,6 +53,7 @@ class HistoryFragment : Fragment() {
     private fun fetchHistoryData() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         db.collection("users").document(userId).collection("routes")
+            .orderBy("date", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documents ->
                 val historyList = mutableListOf<HistoryItem>()
@@ -106,7 +107,6 @@ class HistoryFragment : Fragment() {
                 Log.w("HistoryFragment", "Error getting documents: ", exception)
             }
     }
-
     override fun onResume() {
         super.onResume()
         recyclerView.adapter?.let { adapter ->

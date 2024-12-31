@@ -1,15 +1,15 @@
-DESKRIPSI APLIKASI
+DESKRIPSI APLIKASI:
 Let's Run merupakan aplikasi lari yang dapat melacak dan mencatat aktivitas lari yang dirancang untuk memenuhi kebutuhan pelari dalam memantau perkembangan kebugaran pelari.
 aplikasi Let's Run juga menjadi penghubung bagi orang-orang dengan hobi yang sama, yaitu sebagai komunitas lari. Sehingga dapat memotivasi pelari dalam menjaga konsistensi berlari.
 
-INFORMASI ANGGOTA KELOMPOK
+INFORMASI ANGGOTA KELOMPOK:
 1. Sharone Angelica Jovans - 00000069637
 2. Edwin Fedora Lolo - 00000069568
 3. Moses Alexander - 00000069818
 4. Matthew Chang - 00000069566
 Kelas : IF 570 B & IF 570 BL
 
-FITUR-FITUR APLIKASI
+FITUR-FITUR APLIKASI:
 1. Layar Beranda: Menyediakan akses ke fitur-fitur utama, seperti pencatatan aktivitas lari, komunitas, dan riwayat sesi.
 2. Layar Aktivitas Lari: Menampilkan informasi metrik lari secara real-time, termasuk jarak tempuh, durasi waktu, kalori yang dibakar.
 3. Layar Riwayat Lari: Memperlihatkan daftar sesi lari pengguna sebelumnya, memungkinkan pemantauan perkembangan aktivitas. 

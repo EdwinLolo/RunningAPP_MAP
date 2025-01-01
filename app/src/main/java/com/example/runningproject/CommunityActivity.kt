@@ -80,7 +80,9 @@ class CommunityActivity : AppCompatActivity() {
 
 
     private fun setupRecyclerView() {
-        firestore.collection("communities").get()
+        firestore.collection("communities")
+            .orderBy("timestamp", com.google.firebase.firestore.Query.Direction.DESCENDING) // Mengurutkan berdasarkan timestamp
+            .get()
             .addOnSuccessListener { result ->
                 val communityList = mutableListOf<String>()
                 val communityIds = mutableListOf<String>()
